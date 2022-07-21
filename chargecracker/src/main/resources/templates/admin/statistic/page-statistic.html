@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="admin/admin-base :: head"></head>
+<body>
+<header th:replace="admin/admin-base :: header"></header>
+<main>
+    <div class="container">
+        <div id="main-content">
+            <input type="hidden" th:value="${statistics.months}" id="statistics-months">
+            <div th:each="item: ${statistics.businessOperationCount}">
+                <input type="hidden" th:value="${item.key}" class="businessOperationNames">
+                <input type="hidden" th:value="${item.value}" class="businessOperationDataSet">
+            </div>
+        </div>
+        <div>
+            <canvas id="myChart"></canvas>
+        </div>
+    </div>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    let monthsElement = document.getElementById("statistics-months").value;
+    monthsElement = monthsElement.replace("[", "");
+    monthsElement = monthsElement.replace("]", "");
+    const months = monthsElement.split(", ");
+
+    const inputBusinessOperationNames = document.getElementsByClassName("businessOperationNames");
+    const inputBusinessOperationDataSet  = document.getElementsByClassName("businessOperationDataSet");
+    const businessOperationNames = [];
+    const businessOperationDataSet = [];
+
+    for (let i = 0; i < inputBusinessOperationNames.length; i++) {
+        businessOperationNames.push(inputBusinessOperationNames[i].value);
+        businessOperationDataSet.push(JSON.parse(inputBusinessOperationDataSet[i].value));
+    }
+
+    let dataSet = []
+    const randomBetween = (min, max) => min + Math.floor(Math.random() * (max - min + 1));
+    for (let i = 0; i < businessOperationNames.length; i++) {
+        let rgbTemp = 'rgb(' + randomBetween(0, 255) + ', ' + randomBetween(0, 255) + ', ' + randomBetween(0, 255) + ')';
+        dataSet.push({
+            label: businessOperationNames[i],
+            data: businessOperationDataSet[i],
+            borderColor: rgbTemp,
+            fill: false,
+            tension: 0.1
+        })
+    }
+
+    const data = {
+        labels: months,
+        datasets: dataSet
+    };
+    const config = {
+        type: 'line',
+        data: data,
+    };
+
+    const myChart = new Chart(
+        document.getElementById('myChart'),
+        config
+    );
+</script>
+</body>
+</html>

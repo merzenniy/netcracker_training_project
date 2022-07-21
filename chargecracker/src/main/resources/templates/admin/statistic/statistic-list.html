@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="admin/admin-base :: head"></head>
+<body>
+<header th:replace="admin/admin-base :: header"></header>
+<main>
+    <div class="container">
+        <div id="main-content">
+            <div th:each="item: ${statistics}">
+                <input type="hidden" class="div-counter" th:value="${item.count}">
+                <input type="hidden" class="div-createdAt" th:value="${item.createdAt}">
+            </div>
+            <input type="hidden" th:value="${label}" id="chart-label">
+        </div>
+        <div>
+            <canvas id="myChart"></canvas>
+        </div>
+    </div>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const divCount = document.getElementsByClassName("div-counter");
+    const divCreatedAt = document.getElementsByClassName("div-createdAt")
+    const count = [];
+    const createdAt = [];
+    for (let i = 0; i < divCount.length; i++) {
+        count.push(divCount[i].value);
+        createdAt.push(divCreatedAt[i].value);
+    }
+    const data = {
+        labels: createdAt,
+        datasets: [{
+            label: document.getElementById("chart-label").value,
+            data: count,
+            borderColor: 'rgb(75, 192, 192)',
+            fill: false,
+            tension: 0.1
+        }]
+    };
+    const config = {
+        type: 'line',
+        data: data,
+    };
+
+    const myChart = new Chart(
+        document.getElementById('myChart'),
+        config
+    );
+</script>
+</body>
+</html>

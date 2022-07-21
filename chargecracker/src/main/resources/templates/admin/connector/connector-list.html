@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head th:replace="admin/admin-base :: head"></head>
+<body>
+<script>
+    function changeConnector(e) {
+        document.location.href = "/admin/connector-update/" + e.value;
+    }
+</script>
+<header th:replace="admin/admin-base :: header"></header>
+<main>
+    <div class="container">
+        <div class="row m-2">
+            <a href="/admin/connector-create">Добавить коннектор</a>
+        </div>
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">ID</th>
+                <th scope="col">Тип</th>
+                <th scope="col">Сила тока</th>
+                <th scope="col">Максимальное Напряжение</th>
+                <th scope="col">Предельная мощность</th>
+                <th scope="col"></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="item: ${connectors}">
+                <td th:utext="${item.id}"></td>
+                <td th:utext="${item.type}"></td>
+                <td th:utext="${item.amperage}"></td>
+                <td th:utext="${item.voltage}"></td>
+                <td th:utext="${item.power}"></td>
+                <td>
+                    <div class="d-flex justify-content-end">
+                        <button type="button" class="btn btn-primary m-1" th:value="${item.id}"
+                                onclick="changeConnector(this)">
+                            Изменить
+                        </button>
+                        <form class="m-1" th:action="@{/admin/connector-delete}" method="post">
+                            <input type="hidden" th:value="${item.id}" name="id">
+                            <button type="submit" class="btn btn-primary">Удалить</button>
+                        </form>
+                    </div>
+                </td>
+                <td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+</body>
+</html>

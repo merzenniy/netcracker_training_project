@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="base :: head"></head>
+<body>
+<header th:replace="base :: header"></header>
+<div class="container center-div">
+    <div>
+        <div>
+            <h2>Авторизация</h2>
+        </div>
+        <form th:action="@{/login}" method="post">
+            <div class="row p-2">
+                <div class="col">
+                    <label for="username">Почта</label><br>
+                    <input type="email" name="username" id="username" placeholder="Введите почту"/>
+                </div>
+            </div>
+            <div class="row p-2">
+                <div class="col">
+                    <label for="password">Пароль</label><br>
+                    <input type="password" name="password" id="password" placeholder="Введите пароль"/>
+                </div>
+            </div>
+            <div class="row p-2">
+                <div class="col text-center">
+                    <button type="submit" class="btn btn-primary" style="width: 40%">Вход</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div>
+        <div class="row p-2" th:if="${exception != null}">
+            <div class="col">
+                <div style="color: #ff0000" th:utext="${exception}"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    const submittedForm = document.querySelector("form");
+    submittedForm.addEventListener("submit", event => {
+        event.preventDefault();
+        const form = document.forms[0];
+        const username = form.elements["username"].value;
+        const password = form.elements["password"].value;
+        if (username && password) {
+            form.submit();
+        } else {
+            alert("Не все поля заполненны")
+        }
+    });
+</script>
+</body>
+</html>

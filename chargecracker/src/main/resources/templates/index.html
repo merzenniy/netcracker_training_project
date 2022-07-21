@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Карта</title>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link th:href="@{/css/style.css}" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+<header th:replace="base :: header"></header>
+
+<div class="container map-wrapper">
+    <div id="floating-panel">
+        <div class="d-flex justify-content-around">
+            <label class="form-label">Маршрут: </label>
+            <div class="btn-group" role="group" aria-label="Basic example">
+                <button type="button" class="btn btn-primary" id="shortButton" onclick="leftOneRoute(1, directionsRenderers, map)">Left</button>
+                <button type="button" class="btn btn-primary" id="middleButton" onclick="leftOneRoute(2, directionsRenderers, map)">Middle</button>
+                <button type="button" class="btn btn-primary" id="longButton" onclick="leftOneRoute(3, directionsRenderers, map)">Right</button>
+            </div>
+        </div>
+        <br>
+        <div class="d-flex justify-content-around">
+            <label class="form-label">Растояние: </label>
+            <label class="form-label" id="distance-label"></label>
+        </div>
+
+    </div>
+    <div id="map"></div>
+</div>
+
+<main>
+    <div class="container">
+        <div class="m-2">
+            <div class="row">
+                <div class="col d-flex justify-content-end">
+                    <div class="row">
+                        <label for="sorting" style="width: 15px">Сортировать</label>
+                        <select name="sort" id="sorting">
+                            <option value="/">---------------------------</option>
+                            <option sec:authorize="isAuthenticated()" th:if="${#authentication.getPrincipal().getAutoId() != 0}" value="/user/stations">Подходящие</option>
+                            <option value="/stations-sort-rate/desc">Популярные</option>
+                            <option value="/stations-sort-rate/asc">Не популярные</option>
+                            <option value="/stations-sort-price/asc">От дешевых к дорогим</option>
+                            <option value="/stations-sort-price/desc">От дорогих к дешевым</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="row m-2 p-2">
+                <div class="row p-2" th:if="${exception != null}">
+                    <div class="col">
+                        <div style="color: #ff0000" th:utext="${exception}"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="row m-2 p-2">
+                <div class="col" style="flex-grow: 2"><b>Адрес</b></div>
+                <div class="col" style="flex-grow: 1"><b>Рейтинг</b></div>
+                <div class="col" style="flex-grow: 1"><b>Цена</b></div>
+                <div class="col" style="flex-grow: 1"><b>Типы коннекторов</b></div>
+                <div class="col" style="flex-grow: 0"><b>Статус</b></div>
+                <div class="col" style="flex-grow: 1" sec:authorize="isAuthenticated()"></div>
+            </div>
+            <div id="stationsDiv">
+                <div class="row m-2 p-2" th:each="item: ${stations}">
+                    <div class="col coord" th:utext="${item.cordinates}" style="flex-grow: 2; opacity: 0"></div>
+                    <div class="col" th:utext="${item.rate}" style="flex-grow: 1"></div>
+                    <div class="col" th:utext="${item.price}" style="flex-grow: 1"></div>
+                    <div class="col" style="flex-grow: 1">
+                        <select th:if="${#lists.isEmpty(item.connectors) == true}" id="connectorsType"
+                                style="width: 188px">
+                            <option value="">------------------------</option>
+                        </select>
+                        <select th:if="${#lists.isEmpty(item.connectors) == false}" id="connectorsType"
+                                style="width: 188px">
+                            <option th:each="connectorType: ${item.connectors}"
+                                    th:utext="${connectorType.type}"></option>
+                        </select>
+                    </div>
+                    <div class="col" style="flex-grow: 0">
+                        <div class="circle green-circle" th:if="${item.status == 'WORK'}"></div>
+                        <div class="circle red-circle" th:if="${item.status == 'ON_REPAIR'}"></div>
+                        <div class="circle yellow-circle" th:if="${item.status == 'OCCUPIED'}"></div>
+                    </div>
+                    <div class="col" style="flex-grow: 1" sec:authorize="isAuthenticated()">
+                        <form th:action="@{/favourite-add}" method="post">
+                            <input type="hidden" name="stationId" th:value="${item.stationId}">
+                            <button type="submit" class="btn btn-primary">В избранное</button>
+                        </form>
+                    </div>
+                    <div class="d-flex flex-row">
+                        <div class="p-2">
+                            <a th:href="@{/station/{id}(id=${item.stationId})}">Подробности</a>
+                        </div>
+                        <div class="p-2" sec:authorize="isAuthenticated()">
+                            <a th:href="@{/reservation/station/{id}(id=${item.stationId})}">Забронировать</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script>
+    const selectOnChange = document.querySelector("select");
+    for (let i = 0; i < selectOnChange.options.length; i++) {
+        if (selectOnChange.options[i].value === window.location.pathname) {
+            selectOnChange.options[i].selected = true;
+        }
+    }
+    selectOnChange.addEventListener("change", () => {
+        window.location.href = selectOnChange.value;
+    });
+</script>
+
+<script th:src="@{/js/index.js}"></script>
+<script src="/js/mapUtils.js"></script>
+<script th:replace="base :: gmapsApi"></script>
+  
+</body>
+</html>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="admin/admin-base :: head"></head>
+<body>
+<header th:replace="admin/admin-base :: header"></header>
+<main>
+    <div class="container">
+        <div id="main-content">
+            <div th:each="item: ${statistics}">
+                <input type="hidden" class="div-station-id" th:value="${item.stationId}">
+                <input type="hidden" class="div-hours" th:value="${item.totalTime}">
+            </div>
+            <input type="hidden" th:value="${label}" id="chart-label">
+        </div>
+        <div>
+            <canvas id="myChart"></canvas>
+        </div>
+    </div>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const divStationId = document.getElementsByClassName("div-station-id");
+    const divHours = document.getElementsByClassName("div-hours")
+    const stationsId = [];
+    const hours = [];
+    for (let i = 0; i < divStationId.length; i++) {
+        stationsId.push(divStationId[i].value);
+        hours.push(divHours[i].value);
+    }
+    const data = {
+        labels: stationsId,
+        datasets: [{
+            label: document.getElementById("chart-label").value,
+            data: hours,
+            borderColor: 'rgb(75, 192, 192)',
+            fill: false,
+            tension: 0.1
+        }]
+    };
+    const config = {
+        type: 'line',
+        data: data,
+    };
+
+    const myChart = new Chart(
+        document.getElementById('myChart'),
+        config,
+    );
+</script>
+</body>
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="admin/admin-base :: head"></head>
+<body>
+<header th:replace="admin/admin-base :: header"></header>
+<div class="container center-div">
+    <div>
+        <form th:action="@{/admin/favourite-update}" th:object="${favourite}" method="post">
+            <input type="hidden" th:field="*{id}">
+            <div class="row p-2">
+                <div class="col">
+                    <label for="stationId">ID станции</label><br>
+                    <select th:field="*{stationId}" id="stationId" style="width: 188px">
+                        <option th:each="item: ${stations}" th:value="${item.id}" th:utext="${item.id}"></option>
+                    </select>
+                </div>
+            </div>
+            <div class="row p-2">
+                <div class="col">
+                    <label for="userId">ID пользователя</label><br>
+                    <select th:field="*{userId}" id="userId" style="width: 188px">
+                        <option th:each="item: ${users}" th:value="${item.id}" th:utext="${item.id}"></option>
+                    </select>
+                </div>
+            </div>
+            <div class="row p-2">
+                <div class="col text-center">
+                    <button type="submit" class="btn btn-primary" style="width: 60%">Отправить</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div>
+        <div class="row p-2" th:if="${exception != null}">
+            <div class="col">
+                <div style="color: #ff0000" th:utext="${exception}"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    const formSubmitted = document.querySelector("form");
+    formSubmitted.addEventListener("submit", event => {
+        event.preventDefault();
+        const stationId = document.getElementById("stationId").value;
+        const userId = document.getElementById("userId").value;
+        if (stationId && userId) {
+            formSubmitted.submit();
+        } else {
+            alert("Не правильно введенные данные");
+        }
+    })
+</script>
+</body>
+</html>

@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head th:replace="base :: head"></head>
+<body>
+<header th:replace="base :: header"></header>
+<main>
+    <div class="col" id="auth-user" sec:authorize="isAuthenticated()" style="display: none;"
+         th:utext="${#authentication.getPrincipal().getId()}"></div>
+    <input type="hidden" id="station-information-id" th:value="${station.stationId}">
+    <div class="container">
+        <div class="m-2">
+            <p>Адрес: <span th:utext="${station.cordinates}" id="coord"></span></p>
+            <p>Цена: <span th:utext="${station.price}"></span></p>
+            <p>Рейтинг: <span th:utext="${station.rate}"></span></p>
+            <p>Статус:
+                <span th:if="${station.status == 'WORK'}">Работает</span>
+                <span th:if="${station.status == 'OCCUPIED'}">Не доступна</span>
+                <span th:if="${station.status == 'ON_REPAIR'}">Не исправна</span>
+            </p>
+            <div class="accordion" id="accordionPanelsStayOpenExample">
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="panelsStayOpen-headingTwo">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="false"
+                                aria-controls="panelsStayOpen-collapseTwo">
+                            Коннекторы
+                        </button>
+                    </h2>
+                    <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse"
+                         aria-labelledby="panelsStayOpen-headingTwo">
+                        <div class="accordion-body" th:if="${#lists.isEmpty(station.connectors) == false}">
+                            <div class="row">
+                                <div class="col">Тип</div>
+                                <div class="col">Сила тока</div>
+                                <div class="col">Максимальное Напряжение</div>
+                                <div class="col">Предельная мощность</div>
+                            </div>
+                            <div class="row" th:each="item: ${station.connectors}">
+                                <div class="col" th:utext="${item.type}"></div>
+                                <div class="col" th:utext="${item.amperage}"></div>
+                                <div class="col" th:utext="${item.voltage}"></div>
+                                <div class="col" th:utext="${item.power}"></div>
+                            </div>
+                        </div>
+                        <div class="accordion-body" th:if="${#lists.isEmpty(station.connectors) == true}">
+                            <div class="row">
+                                <h5>У станции нету коннекторов</h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="panelsStayOpen-headingThree">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#panelsStayOpen-collapseThree" aria-expanded="false"
+                                aria-controls="panelsStayOpen-collapseThree">
+                            Комментарии
+                        </button>
+                    </h2>
+                    <div id="panelsStayOpen-collapseThree" class="accordion-collapse collapse"
+                         aria-labelledby="panelsStayOpen-headingThree">
+                        <div class="accordion-body" id="rate-body" th:if="${#lists.isEmpty(station.connectors) == false}">
+                            <div class="row">
+                                <div class="col">Пользователь</div>
+                                <div class="col">Оценка</div>
+                                <div class="col">Комментарий</div>
+                            </div>
+                            <div class="row rate-content" th:each="item: ${rates}">
+                                <div class="col" th:utext="${item.fullName}"></div>
+                                <div class="col rate" th:utext="${item.rate}"></div>
+                                <div class="col commentary" th:utext="${item.commentary}"></div>
+                                <div class="col users" th:utext="${item.userId}" style="display: none;"></div>
+                                <div class="col rate-id" th:utext="${item.rateId}" style="display: none;"></div>
+                            </div>
+                        </div>
+                        <div class="accordion-body" id="rate-body" th:if="${#lists.isEmpty(station.connectors) == true}">
+                            <div class="row">
+                                <h5>У станции нету отзывов</h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="m-2 create-rate-div" sec:authorize="isAuthenticated()">
+                <h4>Оставить отзыв</h4>
+                <form th:action="@{/rate-create}" th:object="${rate}" method="post">
+                    <input type="hidden" th:value="${station.stationId}" name="stationId">
+                    <div class="col">
+                        <label for="mark">Баллы</label>
+                        <select th:field="*{rate}" id="mark">
+                            <option value="0">0</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                        </select>
+                    </div>
+                    <div class="col">
+                        <label for="comment">Напишите отзыв</label><br>
+                        <textarea id="comment" th:field="*{commentary}"
+                                  style="width: 400px; height: 150px"></textarea><br>
+                        <button type="submit" class="btn btn-primary">Отправить</button>
+                    </div>
+                </form>
+            </div>
+            <div class="m-2 changed-rate-div" sec:authorize="isAuthenticated()" style="display: none">
+                <h4>Измените отзыв</h4>
+                <form th:action="@{/rate-update}" th:object="${rate}" method="post">
+                    <input type="hidden" th:field="*{id}" id="rate-id">
+                    <input type="hidden" th:field="*{stationId}" id="station-id">
+                    <input type="hidden" th:field="*{userId}" id="user-id">
+                    <div class="col">
+                        <label for="changed-mark">Баллы</label>
+                        <select th:field="*{rate}" id="changed-mark">
+                            <option value="0">0</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                        </select>
+                    </div>
+                    <div class="col">
+                        <label for="change-comment">Введите новый отзыв отзыв</label><br>
+                        <textarea id="change-comment" th:field="*{commentary}"
+                                  style="width: 400px; height: 150px"></textarea><br>
+                        <button type="submit" class="btn btn-primary">Отправить</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script>
+    async function initMap() {
+        let coord = document.getElementById("coord");
+        const locations = createLocations();
+
+        coord.innerHTML = await new Promise((resolve, reject) => {
+            const geocoder = new google.maps.Geocoder();
+
+            geocoder.geocode({location: location}, (results, status) => {
+                if (status === 'OK') {
+                    resolve(results[0].formatted_address);
+                } else {
+                    reject(status);
+                }
+            });
+        });
+    }
+    const authUser = document.getElementById("auth-user");
+    if (authUser) {
+        const divRateContent = document.querySelectorAll(".rate-content");
+        for (let i = 0; i < divRateContent.length; i++) {
+            if (divRateContent[i].getElementsByClassName("users")[0].innerHTML === authUser.innerHTML) {
+                document.getElementById("rate-body").insertBefore(divRateContent[i], divRateContent[0]);
+
+                document.getElementsByClassName("create-rate-div")[0].style.display = "none";
+                document.getElementsByClassName("changed-rate-div")[0].style.display = "block"
+
+                document.getElementById("user-id").setAttribute("value", authUser.innerHTML);
+
+                document.getElementById("station-id")
+                    .setAttribute("value", document.getElementById("station-information-id").value);
+
+                const rate = parseInt(divRateContent[i].getElementsByClassName("rate")[0].innerHTML);
+                const formRate = document.getElementById("changed-mark");
+                formRate[rate].selected = "selected"
+
+                document.getElementById("rate-id").value =
+                    divRateContent[i].getElementsByClassName("rate-id")[0].innerHTML;
+
+                const commentary = divRateContent[i].getElementsByClassName("commentary")[0].innerHTML;
+                const formComment = document.getElementById("change-comment");
+                formComment.setAttribute("value", commentary);
+                formComment.innerHTML = commentary;
+                break;
+            }
+        }
+    }
+</script>
+
+<script th:replace="base :: gmapsApi"></script>
+
+</body>
+</html>

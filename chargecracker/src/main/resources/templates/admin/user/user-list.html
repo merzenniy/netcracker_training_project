@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="admin/admin-base :: head"></head>
+<body>
+<script>
+    function changeUser(e) {
+        document.location.href = "/admin/user-update/" + e.value;
+    }
+</script>
+<header th:replace="admin/admin-base :: header"></header>
+<main>
+    <div class="container">
+        <div class="row m-2">
+            <a href="/admin/user-create">Добавить пользователя</a>
+        </div>
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">ID</th>
+                <th scope="col">Фамилия</th>
+                <th scope="col">Имя</th>
+                <th scope="col">Отчество</th>
+                <th scope="col">Почта</th>
+                <th scope="col">ID роли</th>
+                <th scope="col">ID машины</th>
+                <th scope="col"></th>
+                <th scope="col"></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="item: ${users}">
+                <td th:utext="${item.id}"></td>
+                <td th:utext="${item.lastName}"></td>
+                <td th:utext="${item.firstName}"></td>
+                <td th:utext="${item.midName}"></td>
+                <td th:utext="${item.mail}"></td>
+                <td th:utext="${item.roleId}"></td>
+                <td th:utext="${item.autoId}"></td>
+                <td>
+                    <div class="d-flex justify-content-end">
+                        <button type="button" class="btn btn-primary m-1" th:value="${item.id}"
+                                onclick="changeUser(this)">
+                            Изменить
+                        </button>
+                        <form class="m-1" th:action="@{/admin/user-delete}" method="post">
+                            <input type="hidden" th:value="${item.id}" name="id">
+                            <button type="submit" class="btn btn-primary">Удалить</button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+</body>
+</html>

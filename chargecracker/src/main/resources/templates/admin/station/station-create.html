@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="admin/admin-base :: head"></head>
+<body>
+<header th:replace="admin/admin-base :: header"></header>
+<div class="container center-div">
+    <div>
+        <form th:action="@{/admin/station-create}" th:object="${station}" method="post">
+            <div class="row p-2">
+                <div class="col">
+                    <label for="cordinates">Координаты</label><br>
+                    <input type="text" th:field="*{cordinates}" id="cordinates"
+                           placeholder="Введите координаты"/>
+                </div>
+            </div>
+            <div class="row p-2">
+                <div class="col">
+                    <label for="price">Цена</label><br>
+                    <input type="number" step="any" th:field="*{price}" id="price"
+                           placeholder="Введите цену"/>
+                </div>
+            </div>
+            <div class="row p-2">
+                <div class="col">
+                    <label for="status">Цена</label><br>
+                    <select th:field="*{status}" id="status" style="width: 188px">
+                        <option th:value="WORK">Работает</option>
+                        <option th:value="OCCUPIED">Не доступна</option>
+                        <option th:value="ON_REPAIR">Не исправна</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row p-2">
+                <div class="col text-center">
+                    <button type="submit" class="btn btn-primary" style="width: 60%">Отправить</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div>
+        <div class="row p-2" th:if="${exception != null}">
+            <div class="col">
+                <div style="color: #ff0000" th:utext="${exception}"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    const formSubmitted = document.querySelector("form");
+    formSubmitted.addEventListener("submit", event => {
+        event.preventDefault();
+        const cordinates = document.getElementById("cordinates").value;
+        const price = document.getElementById("price").value;
+        if (cordinates && price && price > 0) {
+            formSubmitted.submit();
+        } else {
+            alert("Не правильно введенные данные");
+        }
+    })
+</script>
+</body>
+</html>

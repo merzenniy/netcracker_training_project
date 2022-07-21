@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head th:replace="admin/admin-base :: head"></head>
+<body>
+<script>
+    function changeStation(e) {
+        document.location.href = "/admin/station-update/" + e.value;
+    }
+</script>
+<header th:replace="admin/admin-base :: header"></header>
+<main>
+    <div class="container">
+        <div class="row m-2">
+            <a href="/admin/station-create">Добавить станцию</a>
+        </div>
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">ID</th>
+                <th scope="col">Координаты</th>
+                <th scope="col">Рейтинг</th>
+                <th scope="col">Цена</th>
+                <th scope="col">Статус</th>
+                <th scope="col"></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="item: ${stations}">
+                <td th:utext="${item.id}"></td>
+                <td th:utext="${item.cordinates}"></td>
+                <td th:utext="${item.rate}"></td>
+                <td th:utext="${item.price}"></td>
+                <td th:if="${item.status == 'WORK'}">Работает</td>
+                <td th:if="${item.status == 'OCCUPIED'}">Не доступна</td>
+                <td th:if="${item.status == 'ON_REPAIR'}">Не исправна</td>
+                <td>
+                    <div class="d-flex justify-content-end">
+                        <button type="button" class="btn btn-primary m-1" th:value="${item.id}"
+                                onclick="changeStation(this)">
+                            Изменить
+                        </button>
+                        <form class="m-1" th:action="@{/admin/station-delete}" method="post">
+                            <input type="hidden" th:value="${item.id}" name="id">
+                            <button type="submit" class="btn btn-primary">Удалить</button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+    </div>
+</main>
+</body>
+</html>

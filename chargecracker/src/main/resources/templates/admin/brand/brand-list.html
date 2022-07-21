@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head th:replace="admin/admin-base :: head"></head>
+<body>
+<script>
+    function changeBrand(e) {
+        document.location.href = "/admin/brand-update/" + e.value;
+    }
+</script>
+<header th:replace="admin/admin-base :: header"></header>
+<main>
+    <div class="container">
+        <div class="row m-2">
+            <a href="/admin/brand-create">Добавить бренд</a>
+        </div>
+        <div class="col">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Название</th>
+                    <th scope="col"></th>
+                    <td scope="col"></td>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="item: ${brands}">
+                    <td th:utext="${item.id}"></td>
+                    <td th:utext="${item.name}"></td>
+                    <td>
+                        <div class="d-flex justify-content-end">
+                            <button type="button" class="btn btn-primary m-1" th:value="${item.id}"
+                                    onclick="changeBrand(this)">
+                                Изменить
+                            </button>
+                            <form class="m-1" th:action="@{/admin/brand-delete}" method="post">
+                                <input type="hidden" th:value="${item.id}" name="id">
+                                <button type="submit" class="btn btn-primary">Удалить</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</main>
+</body>
+</html>

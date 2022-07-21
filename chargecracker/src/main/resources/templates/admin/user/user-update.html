@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="admin/admin-base :: head"></head>
+<body>
+<header th:replace="admin/admin-base :: header"></header>
+<div class="container center-div">
+    <div>
+        <form th:action="@{/admin/user-update}" th:object="${user}" method="post">
+            <input type="hidden" th:field="*{id}">
+            <div class="row p-2">
+                <div class="col">
+                    <label for="lastName">Фамилия</label><br>
+                    <input type="text" th:field="*{lastName}" id="lastName" placeholder="Введите фамилию"/>
+                </div>
+            </div>
+            <div class="row p-2">
+                <div class="col">
+                    <label for="firstName">Имя</label><br>
+                    <input type="text" th:field="*{firstName}" id="firstName" placeholder="Введите имя"/>
+                </div>
+            </div>
+            <div class="row p-2">
+                <div class="col">
+                    <label for="midName">Отчество</label><br>
+                    <input type="text" th:field="*{midName}" id="midName" placeholder="Введите отчество"/>
+                </div>
+            </div>
+            <div class="row p-2">
+                <div class="col">
+                    <label for="mail">Почта</label><br>
+                    <input type="email" th:field="*{mail}" id="mail" placeholder="Введите почту"/>
+                </div>
+            </div>
+            <div class="row p-2">
+                <div class="col">
+                    <label for="password">Пароль</label><br>
+                    <input type="password" th:field="*{password}" id="password" placeholder="Введите пароль"/>
+                </div>
+            </div>
+            <div class="row p-2">
+                <div class="col">
+                    <label for="roleId">Роль</label><br>
+                    <select th:field="*{roleId}" id="roleId" style="width: 188px">
+                        <option th:each="item: ${roles}" th:value="${item.id}"
+                                th:utext="${item.name}"></option>
+                    </select>
+                </div>
+            </div>
+            <div class="row p-2">
+                <div class="col">
+                    <label for="autoId">ID авто</label><br>
+                    <select th:field="*{autoId}" id="autoId" style="width: 188px">
+                        <option th:each="item: ${autos}" th:value="${item.id}"
+                                th:utext="${item.id}"></option>
+                    </select>
+                </div>
+            </div>
+            <div class="row p-2">
+                <div class="col text-center">
+                    <button type="submit" class="btn btn-primary" style="width: 60%">Отправить</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div>
+        <div class="row p-2" th:if="${exception != null}">
+            <div class="col">
+                <div style="color: #ff0000" th:utext="${exception}"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    const submittedForm = document.querySelector("form");
+    submittedForm.addEventListener("submit", event => {
+        event.preventDefault();
+        const form = document.forms[0];
+        const lastName = form.elements["lastName"].value;
+        const firstName = form.elements["firstName"].value;
+        const midName = form.elements["midName"].value;
+        const mail = form.elements["mail"].value;
+        const autoId = form.elements["autoId"].value;
+        if (lastName && firstName && midName && mail && autoId) {
+            form.submit();
+        } else {
+            alert("Не все поля заполненны")
+        }
+    });
+</script>
+</body>
+</html>

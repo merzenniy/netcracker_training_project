@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="admin/admin-base :: head"></head>
+<body>
+<header th:replace="admin/admin-base :: header"></header>
+<div class="container center-div">
+    <div>
+        <form th:action="@{/admin/connector-create}" th:object="${connector}" method="post">
+            <div class="row p-2">
+                <div class="col">
+                    <label for="type">Тип</label><br>
+                    <input type="text" th:field="*{type}" id="type"
+                           placeholder="Введите тип"/>
+                </div>
+            </div>
+            <div class="row p-2">
+                <div class="col">
+                    <label for="amperage">Сила тока</label><br>
+                    <input type="text" th:field="*{amperage}" id="amperage"
+                           placeholder="Введите силу тока"/>
+                </div>
+            </div>
+            <div class="row p-2">
+                <div class="col">
+                    <label for="voltage">Максимальное напряжение</label><br>
+                    <input type="text" th:field="*{voltage}" id="voltage"
+                           placeholder="Введите максимальное напряжение"/>
+                </div>
+            </div>
+            <div class="row p-2">
+                <div class="col">
+                    <label for="power">Предельная мощность</label><br>
+                    <input type="text" th:field="*{power}" id="power"
+                           placeholder="Введите предельную мощность"/>
+                </div>
+            </div>
+            <div class="row p-2">
+                <div class="col text-center">
+                    <button type="submit" class="btn btn-primary" style="width: 60%">Отправить</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div>
+        <div class="row p-2" th:if="${exception != null}">
+            <div class="col">
+                <div style="color: #ff0000" th:utext="${exception}"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    const formSubmitted = document.querySelector("form");
+    formSubmitted.addEventListener("submit", event => {
+        event.preventDefault();
+        const type = document.getElementById("type").value;
+        const amperage = document.getElementById("amperage").value;
+        const voltage = document.getElementById("voltage").value;
+        const power = document.getElementById("power").value;
+        if (type && amperage && voltage && power && amperage > 0 && voltage > 0 && power > 0) {
+            formSubmitted.submit();
+        } else {
+            alert("Не правильно введенные данные");
+        }
+    })
+</script>
+</body>
+</html>

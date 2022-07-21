@@ -1,0 +1,54 @@
+html, body {
+    height: 100%;
+}
+
+#map {
+    height: 100%;
+}
+
+.map-wrapper {
+    height: 100%;
+}
+
+#floating-panel {
+    display: none;
+    width: 40%;
+    position: absolute;
+    top: 10px;
+    left: 25%;
+    z-index: 5;
+    background-color: #fff;
+    padding: 5px;
+    border: 1px solid #999;
+    text-align: center;
+    font: 400 18px Roboto, Arial, sans-serif;
+    font-min-size: large;
+    line-height: 30px;
+    padding-left: 10px;
+}
+
+.center-div {
+    height: 80%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.circle {
+    border-radius: 50%;
+    height: 30px;
+    width: 30px;
+}
+
+.red-circle {
+    background: #ff0000;
+}
+
+.green-circle {
+    background: #008000;
+}
+
+.yellow-circle {
+    background: #ffff00;
+}

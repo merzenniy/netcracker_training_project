@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="base :: head"></head>
+<body>
+<header th:replace="base :: header"></header>
+<div class="container">
+    <div class="m-2">
+        <h4 class="text-center">Личная информация</h4>
+        <p>
+            Фамилия: <span th:utext="${user.userLastName}"></span>
+        </p>
+        <p>
+            Имя: <span th:utext="${user.userFirstName}"></span>
+        </p>
+        <p>
+            Отчество: <span th:utext="${user.userMidName}"></span>
+        </p>
+        <p>
+            Почта: <span th:utext="${user.userMail}"></span>
+        </p>
+        <p>
+            <a th:href="@{/user-update}">Изменить личные данные</a>
+        </p>
+        <p>
+            <a th:href="@{/user-password-update}">Изменить пароль</a>
+        </p>
+    </div>
+    <div th:if="${user.autoModel != null}">
+        <div class="accordion" id="accordionPanelsStayOpenExample">
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="panelsStayOpen-headingTwo">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="false"
+                            aria-controls="panelsStayOpen-collapseTwo">
+                        Автомобиль
+                    </button>
+                </h2>
+                <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse"
+                     aria-labelledby="panelsStayOpen-headingTwo">
+                    <div class="accordion-body">
+                        <p>
+                            Модель автомобиля: <span th:utext="${user.autoModel}"></span>
+                        </p>
+                        <p>
+                            Максимальный заряд автомобиля: <span th:utext="${user.autoMaxCharge}"></span>
+                        </p>
+                        <p>
+                            Бренд: <span th:utext="${user.brandName}"></span>
+                        </p>
+                        <p>
+                            <a th:href="@{/user/update-auto}">Изменить</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="panelsStayOpen-headingThree">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#panelsStayOpen-collapseThree" aria-expanded="false"
+                            aria-controls="panelsStayOpen-collapseThree">
+                        Конектор
+                    </button>
+                </h2>
+                <div id="panelsStayOpen-collapseThree" class="accordion-collapse collapse"
+                     aria-labelledby="panelsStayOpen-headingThree">
+                    <div class="accordion-body">
+                        <p>
+                            Тип: <span th:utext="${user.connectorType}"></span>
+                        </p>
+                        <p>
+                            Сила тока: <span th:utext="${user.connectorAmperage}"></span>
+                        </p>
+                        <p>
+                            Максимальное напряжение: <span th:utext="${user.connectorVoltage}"></span>
+                        </p>
+                        <p>
+                            Предельная мощность: <span th:utext="${user.connectorPower}"></span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="accordion accordion-flush" id="accordionFlushExample">
+        </div>
+    </div>
+    <div th:if="${user.autoModel == null}" class="m-2">
+        <p>
+            <a href="/user/create-auto">Добавить автомобиль</a>
+        </p>
+    </div>
+</div>
+</body>
+</html>

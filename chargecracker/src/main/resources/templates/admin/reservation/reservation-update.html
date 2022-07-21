@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="admin/admin-base :: head"></head>
+<body>
+<header th:replace="admin/admin-base :: header"></header>
+<div class="container center-div">
+    <div>
+        <form th:action="@{/admin/reservation-update}" th:object="${reservation}" method="post">
+            <input type="hidden" th:field="*{id}">
+            <div class="row p-2">
+                <div class="col">
+                    <label for="time">Дата начала</label><br>
+                    <input type="text" th:field="*{time}" id="time"
+                           placeholder="Введите дату начала"/>
+                </div>
+            </div>
+            <div class="row p-2">
+                <div class="col">
+                    <label for="endTime">Дата конца</label><br>
+                    <input type="text" th:field="*{endTime}" id="endTime"
+                           placeholder="Введите дату конца"/>
+                </div>
+            </div>
+            <div class="row p-2">
+                <div class="col">
+                    <label for="code">Код</label><br>
+                    <input type="text" th:field="*{code}" id="code"
+                           placeholder="Введите код"/>
+                </div>
+            </div>
+            <div class="row p-2">
+                <div class="col">
+                    <label for="stationId">ID станции</label><br>
+                    <select th:field="*{stationId}" id="stationId" style="width: 188px">
+                        <option th:each="item: ${stations}" th:value="${item.id}" th:utext="${item.id}"></option>
+                    </select>
+                </div>
+            </div>
+            <div class="row p-2">
+                <div class="col">
+                    <label for="userId">ID пользователя</label><br>
+                    <select th:field="*{userId}" id="userId" style="width: 188px">
+                        <option th:each="item: ${users}" th:value="${item.id}" th:utext="${item.id}"></option>
+                    </select>
+                </div>
+            </div>
+            <div class="row p-2">
+                <div class="col text-center">
+                    <button type="submit" class="btn btn-primary" style="width: 60%">Отправить</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div>
+        <div class="row p-2" th:if="${exception != null}">
+            <div class="col">
+                <div style="color: #ff0000" th:utext="${exception}"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    const formSubmitted = document.querySelector("form");
+    formSubmitted.addEventListener("submit", event => {
+        event.preventDefault();
+        const stationId = document.getElementById("stationId").value;
+        const userId = document.getElementById("userId").value;
+        const time = document.getElementById("time").value;
+        const endTime = document.getElementById("endTime").value;
+        const code = document.getElementById("code").value;
+        if (stationId && userId && time && endTime && code) {
+            formSubmitted.submit();
+        } else {
+            alert("Не правильно введенные данные");
+        }
+    })
+</script>
+</body>
+</html>

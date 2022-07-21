@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="base :: head"></head>
+<body>
+<header th:replace="base :: header"></header>
+<main th:if="${reservations != null}">
+    <div class="container">
+        <div class="m-2">
+            <div class="row m-2 p-2">
+                <div class="col" style="flex-grow: 2"><b>Адресс</b></div>
+                <div class="col" style="flex-grow: 1"><b>Дата начала</b></div>
+                <div class="col" style="flex-grow: 1"><b>Дата конца</b></div>
+                <div class="col" style="flex-grow: 1"><b>Код</b></div>
+            </div>
+            <div class="row m-2 p-2" th:each="item: ${reservations}">
+                <div class="col coord" th:utext="${item.cordinates}" style="flex-grow: 2"></div>
+                <div class="col" th:utext="${item.startTime}" style="flex-grow: 1"></div>
+                <div class="col" th:utext="${item.endTime}" style="flex-grow: 1"></div>
+                <div class="col" th:utext="${item.code}" style="flex-grow: 1"></div>
+            </div>
+        </div>
+    </div>
+</main>
+<div th:if="${reservations == null}" class="center-div">
+    <div class="row">
+        <h3>У вас нету забронированных станций</h3>
+    </div>
+</div>
+
+<script src="/js/mapUtils.js"></script>
+
+<script>
+    async function initMap() {
+        const geocoder = new google.maps.Geocoder();
+        const locations = createLocations();
+        const addresses = await createAddresses(geocoder, locations);
+
+        displayAddresses(addresses);
+    }
+
+</script>
+
+<script th:replace="base :: gmapsApi"></script>
+
+</body>
+</html>

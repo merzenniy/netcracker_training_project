@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="base :: head"></head>
+<body>
+<header th:replace="base :: header"></header>
+<div class="container center-div">
+    <div class="row">
+        <div class="row p-2">
+            <div class="col">
+                <label for="date-1">Дата начала</label><br>
+                <input type="date" class="date" id="date-1" style="width: 188px">
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="row p-2">
+            <div class="col">
+                <label for="start-time">Время начала</label><br>
+                <select id="start-time" style="width: 188px">
+                    <option value="00:00:00">00:00</option>
+                    <option value="01:00:00">01:00</option>
+                    <option value="02:00:00">02:00</option>
+                    <option value="03:00:00">03:00</option>
+                    <option value="04:00:00">04:00</option>
+                    <option value="05:00:00">05:00</option>
+                    <option value="06:00:00">06:00</option>
+                    <option value="07:00:00">07:00</option>
+                    <option value="08:00:00">08:00</option>
+                    <option value="09:00:00">09:00</option>
+                    <option value="10:00:00">10:00</option>
+                    <option value="11:00:00">11:00</option>
+                    <option value="12:00:00">12:00</option>
+                    <option value="13:00:00">13:00</option>
+                    <option value="14:00:00">14:00</option>
+                    <option value="15:00:00">15:00</option>
+                    <option value="16:00:00">16:00</option>
+                    <option value="17:00:00">17:00</option>
+                    <option value="18:00:00">18:00</option>
+                    <option value="19:00:00">19:00</option>
+                    <option value="20:00:00">20:00</option>
+                    <option value="21:00:00">21:00</option>
+                    <option value="22:00:00">22:00</option>
+                    <option value="23:00:00">23:00</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="row p-2">
+        <div class="col">
+            <label for="date-2">Дата конца</label><br>
+            <input type="date" class="date" id="date-2" style="width: 188px">
+        </div>
+    </div>
+    <div class="row p-2">
+        <div class="col">
+            <label for="end-time">Время конца</label><br>
+            <select id="end-time" style="width: 188px">
+                <option value="00:00:00">00:00</option>
+                <option value="01:00:00">01:00</option>
+                <option value="02:00:00">02:00</option>
+                <option value="03:00:00">03:00</option>
+                <option value="04:00:00">04:00</option>
+                <option value="05:00:00">05:00</option>
+                <option value="06:00:00">06:00</option>
+                <option value="07:00:00">07:00</option>
+                <option value="08:00:00">08:00</option>
+                <option value="09:00:00">09:00</option>
+                <option value="10:00:00">10:00</option>
+                <option value="11:00:00">11:00</option>
+                <option value="12:00:00">12:00</option>
+                <option value="13:00:00">13:00</option>
+                <option value="14:00:00">14:00</option>
+                <option value="15:00:00">15:00</option>
+                <option value="16:00:00">16:00</option>
+                <option value="17:00:00">17:00</option>
+                <option value="18:00:00">18:00</option>
+                <option value="19:00:00">19:00</option>
+                <option value="20:00:00">20:00</option>
+                <option value="21:00:00">21:00</option>
+                <option value="22:00:00">22:00</option>
+                <option value="23:00:00">23:00</option>
+            </select>
+        </div>
+    </div>
+    <form th:action="@{/reservation-create}" th:object="${reservation}" method="post">
+        <input type="hidden" th:field="*{stationId}">
+        <input type="hidden" th:field="*{time}" id="send-start-time">
+        <input type="hidden" th:field="*{endTime}" id="send-end-time">
+        <button type="submit" class="btn btn-primary m-1">Забронировать</button>
+    </form>
+</div>
+<script>
+    let currentDate = new Date();
+    const dateElement = document.getElementsByClassName("date");
+    const minDate = currentDate.toISOString().split('T')[0];
+
+    currentDate.setDate(currentDate.getDate() + 2);
+    const maxDate = currentDate.toISOString().split('T')[0]
+
+    for (let i = 0; i < dateElement.length; i++) {
+        dateElement[i].setAttribute("min", minDate);
+        dateElement[i].setAttribute("max", maxDate);
+    }
+
+    const formElement = document.querySelector("form");
+    formElement.addEventListener("submit", (event) => {
+        event.preventDefault();
+        const startDate = dateElement[0];
+        const endDate = dateElement[1];
+        const startTime = document.getElementById("start-time");
+        const endTime = document.getElementById("end-time");
+
+
+        let startTimestamp = new Date(startDate.value);
+        startTimestamp.setHours(startTime.value.split(":")[0]);
+
+        let endTimestamp = new Date(endDate.value + ", " + endTime.value);
+        endTimestamp.setHours(endTime.value.split(":")[0]);
+
+
+        const reservationHours = (startTimestamp - endTimestamp) / (1000 * 3600);
+        if (Math.abs(reservationHours) > 5) {
+            alert("Нельзя забронировать станцию больше чем на 5 часов")
+        } else if (reservationHours > 0) {
+            alert("Не правильно выбранное время")
+        } else {
+            document.getElementById("send-start-time").setAttribute("value", startDate.value + " " + startTime.value);
+            document.getElementById("send-end-time").setAttribute("value", endDate.value + " " + endTime.value);
+            formElement.submit();
+        }
+    });
+</script>
+</body>
+</html>
